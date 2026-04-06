@@ -314,14 +314,14 @@ export function FeaturesSection() {
    SPECS SECTION — key performance metrics
 ═══════════════════════════════════════════════════ */
 const SPECS = [
-  { label: "Top Speed", value: "420 km/h", icon: "⚡" },
-  { label: "Acceleration", value: "0–100 km/h in 2.4s", icon: "🚀" },
-  { label: "Horsepower", value: "1,479 HP", icon: "💪" },
-  { label: "Torque", value: "1,180 lb-ft", icon: "⛓️" },
-  { label: "Engine", value: "8.0L W16", icon: "🔧" },
-  { label: "Transmission", value: "7-speed DSG", icon: "⚙️" },
-  { label: "Weight", value: "1,995 kg", icon: "⚖️" },
-  { label: "Drag Coefficient", value: "0.36 Cd", icon: "💨" },
+  { label: "Top Speed", value: "420 km/h" },
+  { label: "Acceleration", value: "0–100 km/h in 2.4s" },
+  { label: "Horsepower", value: "1,479 HP" },
+  { label: "Torque", value: "1,180 lb-ft" },
+  { label: "Engine", value: "8.0L W16" },
+  { label: "Transmission", value: "7-speed DSG" },
+  { label: "Weight", value: "1,995 kg" },
+  { label: "Drag Coefficient", value: "0.36 Cd" },
 ];
 
 export function SpecsSection() {
@@ -355,7 +355,13 @@ export function SpecsSection() {
             transform: vis ? "translateY(0)" : "translateY(20px)",
             transition: `opacity 0.6s ${i * 0.05}s ease, transform 0.6s ${i * 0.05}s cubic-bezier(0.22,1,0.36,1)`,
           }}>
-            <span className="spec-icon" style={S.specIcon}>{spec.icon}</span>
+            <div style={{
+              width: "100%",
+              height: "3px",
+              background: "#00d9ff",
+              borderRadius: "2px",
+              marginBottom: "12px",
+            }} />
             <p style={S.specLabel}>{spec.label}</p>
             <p style={S.specValue}>{spec.value}</p>
           </div>
@@ -496,20 +502,37 @@ export function GlobalResponsive() {
   return (
     <style>{`
       @media (max-width: 768px) {
-        /* hero text */
         .bugatti-hero-text { padding: 24px 28px !important; }
       }
       
-      /* Specs card hover effect */
-      .spec-card:hover {
-        background: linear-gradient(135deg, rgba(0, 180, 230, 0.1) 0%, rgba(0, 180, 230, 0.05) 100%) !important;
-        border-color: rgba(0, 180, 230, 0.4) !important;
-        transform: translateY(-4px);
-        box-shadow: 0 12px 32px rgba(0, 180, 230, 0.15);
+      /* Vibrant poppy spec card effects */
+      .spec-card {
+        position: relative;
       }
       
-      .spec-card:hover .spec-icon {
-        transform: scale(1.1);
+      .spec-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: inherit;
+        border-radius: 16px;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+        z-index: -1;
+      }
+      
+      .spec-card:hover {
+        transform: translateY(-8px) scale(1.05);
+        border-width: 2px;
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+      }
+      
+      .spec-card:hover::after {
+        opacity: 1;
       }
     `}</style>
   );
@@ -640,7 +663,7 @@ const S = {
 
   /* Specs Section */
   specs: {
-    background: "#0f0f0f",
+    background: "#0a0a0a",
     padding: "120px 48px 140px",
     display: "flex",
     flexDirection: "column",
@@ -652,14 +675,14 @@ const S = {
     fontStyle: "italic",
     fontWeight: 300,
     fontSize: "clamp(2rem, 5vw, 3rem)",
-    color: "#bbb",
+    color: "#f0f0f0",
     letterSpacing: "0.06em",
     textAlign: "center",
   },
   specsGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-    gap: "32px",
+    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+    gap: "24px",
     maxWidth: "1200px",
     width: "100%",
   },
@@ -667,31 +690,28 @@ const S = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: "14px",
-    padding: "28px 24px",
-    background: "linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)",
-    borderRadius: "12px",
-    border: "1px solid rgba(0, 180, 230, 0.2)",
+    gap: "18px",
+    padding: "32px 24px",
+    background: "#111",
+    borderRadius: "16px",
+    border: "2px solid #00d9ff",
     cursor: "pointer",
-    transition: "all 0.3s ease",
+    transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
     position: "relative",
-  },
-  specIcon: {
-    fontSize: "3.2rem",
-    display: "block",
-    transition: "transform 0.3s ease",
+    overflow: "hidden",
   },
   specLabel: {
     fontFamily: "'Inter', sans-serif",
-    fontSize: "0.7rem",
-    letterSpacing: "0.2em",
+    fontSize: "0.75rem",
+    letterSpacing: "0.18em",
     textTransform: "uppercase",
-    color: "#00b4e6",
+    color: "#00d9ff",
     margin: 0,
+    fontWeight: 600,
   },
   specValue: {
     fontFamily: "'Cormorant Garamond', serif",
-    fontSize: "1.4rem",
+    fontSize: "1.5rem",
     fontWeight: 700,
     color: "#fff",
     margin: 0,
