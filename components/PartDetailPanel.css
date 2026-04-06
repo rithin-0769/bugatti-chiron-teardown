@@ -1,0 +1,152 @@
+.detail-panel {
+  position: fixed;
+  top: 50%;
+  right: 24px;
+  transform: translateY(-50%);
+  width: 340px;
+  max-height: 80vh;
+  background: rgba(14, 16, 24, 0.95);
+  border: 1px solid rgba(0, 180, 230, 0.18);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(24px);
+  padding: 28px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.04);
+  overflow-y: auto;
+}
+
+/* Header */
+.detail-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detail-panel__title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detail-panel__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.detail-panel__category {
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+.detail-panel__title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.detail-panel__close {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.detail-panel__close:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--text-primary);
+}
+
+/* Stat hero */
+.detail-panel__stat-hero {
+  background: linear-gradient(135deg, rgba(from var(--col) r g b / 0.12) 0%, rgba(from var(--col) r g b / 0.04) 100%);
+  border: 1px solid rgba(from var(--col) r g b / 0.25);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-panel__stat-value {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--col);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.detail-panel__stat-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Description */
+.detail-panel__description {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  border-left: 2px solid rgba(0, 180, 230, 0.2);
+  padding-left: 14px;
+}
+
+/* Material */
+.detail-panel__material {
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-panel__material-label {
+  font-size: 0.63rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.detail-panel__material-value {
+  font-size: 0.85rem;
+  color: var(--bugatti-silver);
+  font-weight: 400;
+}
+
+/* Brand footer */
+.detail-panel__brand {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Scrollbar inside panel */
+.detail-panel::-webkit-scrollbar { width: 4px; }
+.detail-panel::-webkit-scrollbar-thumb { background: rgba(0,180,230,0.3); border-radius: 2px; }

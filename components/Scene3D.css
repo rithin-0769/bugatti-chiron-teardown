@@ -1,0 +1,168 @@
+.scene3d-section {
+  position: relative;
+  height: 350vh; /* tall section to drive scroll animation */
+  background: var(--bg-deep);
+}
+
+/* Sticky canvas container */
+.scene3d-sticky {
+  position: sticky;
+  top: 56px; /* navbar height */
+  height: calc(100vh - 56px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+.scene3d-header {
+  position: absolute;
+  top: 20px;
+  left: 32px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+}
+.scene3d-title {
+  font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+}
+
+/* Progress bar */
+.scene3d-progress {
+  position: absolute;
+  bottom: 200px;
+  left: 32px;
+  right: 32px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+.scene3d-progress__bar {
+  height: 2px;
+  background: linear-gradient(90deg, var(--bugatti-blue), #00e5ff);
+  border-radius: 1px;
+  box-shadow: 0 0 8px rgba(0, 180, 230, 0.6);
+  transition: width 0.05s linear;
+  max-width: 200px;
+}
+.scene3d-progress__label {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Canvas */
+.scene3d-canvas {
+  position: absolute !important;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* 3D HTML labels */
+.part-3d-label {
+  background: rgba(8, 10, 18, 0.88);
+  border: 1px solid transparent;
+  backdrop-filter: blur(10px);
+  border-radius: 6px;
+  padding: 5px 10px;
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+  transform: translateY(-120%);
+  transition: opacity 0.3s ease;
+}
+.part-3d-label__name {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #e8eaf0;
+  letter-spacing: 0.05em;
+}
+.part-3d-label__stat {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  font-family: var(--font-display);
+}
+
+/* Parts legend grid */
+.parts-legend {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 4px;
+  padding: 8px 16px 12px;
+  background: linear-gradient(to top, rgba(6,7,10,0.95) 70%, transparent);
+  z-index: 20;
+}
+
+.parts-legend__item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+.parts-legend__item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--col);
+  opacity: 0;
+  transition: var(--transition);
+}
+.parts-legend__item:hover::before,
+.parts-legend__item--active::before { opacity: 1; }
+.parts-legend__item:hover,
+.parts-legend__item--active {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(from var(--col) r g b / 0.3);
+}
+.parts-legend__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--col);
+  box-shadow: 0 0 6px var(--col);
+  flex-shrink: 0;
+}
+.parts-legend__name {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.parts-legend__stat {
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--col);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
