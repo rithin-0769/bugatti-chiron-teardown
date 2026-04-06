@@ -311,6 +311,131 @@ export function FeaturesSection() {
 }
 
 /* ═══════════════════════════════════════════════════
+   SPECS SECTION — key performance metrics
+═══════════════════════════════════════════════════ */
+const SPECS = [
+  { label: "Top Speed", value: "420 km/h", icon: "⚡" },
+  { label: "Acceleration", value: "0–100 km/h in 2.4s", icon: "🚀" },
+  { label: "Horsepower", value: "1,479 HP", icon: "💪" },
+  { label: "Torque", value: "1,180 lb-ft", icon: "⛓️" },
+  { label: "Engine", value: "8.0L W16", icon: "🔧" },
+  { label: "Transmission", value: "7-speed DSG", icon: "⚙️" },
+  { label: "Weight", value: "1,995 kg", icon: "⚖️" },
+  { label: "Drag Coefficient", value: "0.36 Cd", icon: "💨" },
+];
+
+export function SpecsSection() {
+  const secRef = useRef(null);
+  const [vis, setVis] = useState(false);
+
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setVis(true); },
+      { threshold: 0.15 }
+    );
+    if (secRef.current) io.observe(secRef.current);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <section id="specs" ref={secRef} style={S.specs}>
+      <p style={{
+        ...S.specsHeading,
+        opacity: vis ? 1 : 0,
+        transform: vis ? "none" : "translateY(16px)",
+        transition: "opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1)",
+      }}>
+        By The Numbers
+      </p>
+      <div style={S.specsGrid}>
+        {SPECS.map((spec, i) => (
+          <div key={i} style={{
+            ...S.specCard,
+            opacity: vis ? 1 : 0,
+            transform: vis ? "translateY(0)" : "translateY(20px)",
+            transition: `opacity 0.6s ${i * 0.05}s ease, transform 0.6s ${i * 0.05}s cubic-bezier(0.22,1,0.36,1)`,
+          }}>
+            <span style={S.specIcon}>{spec.icon}</span>
+            <p style={S.specLabel}>{spec.label}</p>
+            <p style={S.specValue}>{spec.value}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════
+   TECH SECTION — engineering highlights
+═══════════════════════════════════════════════════ */
+const TECH_HIGHLIGHTS = [
+  {
+    title: "Carbon Fiber Monocoque",
+    desc: "50,000 Nm/° torsional stiffness. Lighter. Stronger. Stiffer than an LMP1 race car.",
+  },
+  {
+    title: "Quad Turbochargers",
+    desc: "Four massive turbos working in concert to deliver peak boost at every RPM. No lag. Pure response.",
+  },
+  {
+    title: "Active Aerodynamics",
+    desc: "Adaptive wing and splitter systems that adjust in real-time based on speed and driving conditions.",
+  },
+  {
+    title: "Michelin Pilot Sport Tires",
+    desc: "Custom 20-inch wheels. Grip beyond measure. Handcrafted to specifications for the Chiron alone.",
+  },
+  {
+    title: "7-Speed DSG",
+    desc: "Lightning-fast shifts. Seamless power delivery from idle to redline. Predictable. Relentless.",
+  },
+  {
+    title: "Ceramic Brakes",
+    desc: "Eight-piston calipers front and rear. Can decelerate from 400 km/h to 0 in under 10 seconds.",
+  },
+];
+
+export function TechSection() {
+  const secRef = useRef(null);
+  const [vis, setVis] = useState(false);
+
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setVis(true); },
+      { threshold: 0.1 }
+    );
+    if (secRef.current) io.observe(secRef.current);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <section id="tech" ref={secRef} style={S.tech}>
+      <p style={{
+        ...S.techHeading,
+        opacity: vis ? 1 : 0,
+        transform: vis ? "none" : "translateY(16px)",
+        transition: "opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1)",
+      }}>
+        Engineering Excellence
+      </p>
+      <div style={S.techGrid}>
+        {TECH_HIGHLIGHTS.map((tech, i) => (
+          <div key={i} style={{
+            ...S.techCard,
+            opacity: vis ? 1 : 0,
+            transform: vis ? "translateY(0)" : "translateY(24px)",
+            transition: `opacity 0.6s ${i * 0.06}s ease, transform 0.6s ${i * 0.06}s cubic-bezier(0.22,1,0.36,1)`,
+          }}>
+            <h3 style={S.techTitle}>{tech.title}</h3>
+            <p style={S.techDesc}>{tech.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════
    CTA / INFO SECTION — more content about the car
 ═══════════════════════════════════════════════════ */
 export function CTASection() {
@@ -327,7 +452,7 @@ export function CTASection() {
   }, []);
 
   return (
-    <section id="specs" ref={secRef} style={S.ctaInfo}>
+    <section id="final" ref={secRef} style={S.ctaInfo}>
       <div style={{
         ...S.ctaInfoBlock,
         opacity:   vis ? 1 : 0,
@@ -365,8 +490,8 @@ export function FooterSection() {
         <div style={S.footerLinks}>
           <a href="#hero" style={S.footerLink}>Home</a>
           <a href="#features" style={S.footerLink}>Features</a>
-          <a href="#teardown" style={S.footerLink}>3D Teardown</a>
           <a href="#specs" style={S.footerLink}>Specs</a>
+          <a href="#tech" style={S.footerLink}>Technology</a>
         </div>
         <div style={S.footerMeta}>
           <p style={S.footerCopy}>Built with React · Vite · React Three Fiber · Framer Motion</p>
@@ -512,6 +637,110 @@ const S = {
     lineHeight: 1.8,
     color: "#555",
     letterSpacing: "0.01em",
+  },
+
+  /* Specs Section */
+  specs: {
+    background: "#f0ede8",
+    padding: "100px 48px 120px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "60px",
+  },
+  specsHeading: {
+    fontFamily: "'Cormorant Garamond', serif",
+    fontStyle: "italic",
+    fontWeight: 300,
+    fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
+    color: "#888",
+    letterSpacing: "0.04em",
+    textAlign: "center",
+  },
+  specsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+    gap: "28px",
+    maxWidth: "1080px",
+    width: "100%",
+  },
+  specCard: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "10px",
+    padding: "20px",
+    background: "#ffffff",
+    borderRadius: "8px",
+    border: "1px solid #e8e5e0",
+  },
+  specIcon: {
+    fontSize: "2.4rem",
+  },
+  specLabel: {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: "0.72rem",
+    letterSpacing: "0.16em",
+    textTransform: "uppercase",
+    color: "#999",
+    margin: 0,
+  },
+  specValue: {
+    fontFamily: "'Cormorant Garamond', serif",
+    fontSize: "1.2rem",
+    fontWeight: 700,
+    color: "#000",
+    margin: 0,
+    textAlign: "center",
+  },
+
+  /* Tech Section */
+  tech: {
+    background: "#ffffff",
+    padding: "100px 48px 120px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "60px",
+  },
+  techHeading: {
+    fontFamily: "'Cormorant Garamond', serif",
+    fontStyle: "italic",
+    fontWeight: 300,
+    fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
+    color: "#999",
+    letterSpacing: "0.04em",
+    textAlign: "center",
+  },
+  techGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+    gap: "40px",
+    maxWidth: "1080px",
+    width: "100%",
+  },
+  techCard: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+    padding: "32px",
+    background: "#f8f6f3",
+    borderRadius: "4px",
+    border: "1px solid #ebe7e0",
+  },
+  techTitle: {
+    fontFamily: "'Cormorant Garamond', serif",
+    fontSize: "1.3rem",
+    fontWeight: 700,
+    color: "#111",
+    margin: 0,
+  },
+  techDesc: {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: "0.9rem",
+    lineHeight: 1.7,
+    color: "#555",
+    margin: 0,
   },
 
   /* Footer */

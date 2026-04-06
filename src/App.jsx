@@ -3,11 +3,12 @@ import Lenis from "lenis";
 import {
   HeroSection,
   FeaturesSection,
+  SpecsSection,
+  TechSection,
   CTASection,
   FooterSection,
   GlobalResponsive,
 } from "./sections";
-import Scene3DSection from "./components/Scene3D.jsx";
 
 export default function App() {
   // Lenis smooth scroll
@@ -32,7 +33,8 @@ export default function App() {
       <GlobalResponsive />
       <HeroSection />
       <FeaturesSection />
-      <Scene3DSection />
+      <SpecsSection />
+      <TechSection />
       <CTASection />
       <FooterSection />
     </>
