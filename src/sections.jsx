@@ -349,13 +349,13 @@ export function SpecsSection() {
       </p>
       <div style={S.specsGrid}>
         {SPECS.map((spec, i) => (
-          <div key={i} style={{
+          <div key={i} className="spec-card" style={{
             ...S.specCard,
             opacity: vis ? 1 : 0,
             transform: vis ? "translateY(0)" : "translateY(20px)",
             transition: `opacity 0.6s ${i * 0.05}s ease, transform 0.6s ${i * 0.05}s cubic-bezier(0.22,1,0.36,1)`,
           }}>
-            <span style={S.specIcon}>{spec.icon}</span>
+            <span className="spec-icon" style={S.specIcon}>{spec.icon}</span>
             <p style={S.specLabel}>{spec.label}</p>
             <p style={S.specValue}>{spec.value}</p>
           </div>
@@ -483,20 +483,7 @@ export function FooterSection() {
   return (
     <footer style={S.footer}>
       <div style={S.footerInner}>
-        <div>
-          <p style={S.footerTitle}>Bugatti Concept</p>
-          <p style={S.footerSub}>An interactive Chiron teardown built for engineers and enthusiasts.</p>
-        </div>
-        <div style={S.footerLinks}>
-          <a href="#hero" style={S.footerLink}>Home</a>
-          <a href="#features" style={S.footerLink}>Features</a>
-          <a href="#specs" style={S.footerLink}>Specs</a>
-          <a href="#tech" style={S.footerLink}>Technology</a>
-        </div>
-        <div style={S.footerMeta}>
-          <p style={S.footerCopy}>Built with React · Vite · React Three Fiber · Framer Motion</p>
-          <p style={S.footerCredit}>Made by Rithin Ravoori</p>
-        </div>
+        <p style={S.footerCredit}>Made by Rithin Ravoori</p>
       </div>
     </footer>
   );
@@ -511,6 +498,18 @@ export function GlobalResponsive() {
       @media (max-width: 768px) {
         /* hero text */
         .bugatti-hero-text { padding: 24px 28px !important; }
+      }
+      
+      /* Specs card hover effect */
+      .spec-card:hover {
+        background: linear-gradient(135deg, rgba(0, 180, 230, 0.1) 0%, rgba(0, 180, 230, 0.05) 100%) !important;
+        border-color: rgba(0, 180, 230, 0.4) !important;
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0, 180, 230, 0.15);
+      }
+      
+      .spec-card:hover .spec-icon {
+        transform: scale(1.1);
       }
     `}</style>
   );
@@ -641,55 +640,60 @@ const S = {
 
   /* Specs Section */
   specs: {
-    background: "#f0ede8",
-    padding: "100px 48px 120px",
+    background: "#0f0f0f",
+    padding: "120px 48px 140px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: "60px",
+    gap: "80px",
   },
   specsHeading: {
     fontFamily: "'Cormorant Garamond', serif",
     fontStyle: "italic",
     fontWeight: 300,
-    fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
-    color: "#888",
-    letterSpacing: "0.04em",
+    fontSize: "clamp(2rem, 5vw, 3rem)",
+    color: "#bbb",
+    letterSpacing: "0.06em",
     textAlign: "center",
   },
   specsGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-    gap: "28px",
-    maxWidth: "1080px",
+    gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+    gap: "32px",
+    maxWidth: "1200px",
     width: "100%",
   },
   specCard: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: "10px",
-    padding: "20px",
-    background: "#ffffff",
-    borderRadius: "8px",
-    border: "1px solid #e8e5e0",
+    gap: "14px",
+    padding: "28px 24px",
+    background: "linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)",
+    borderRadius: "12px",
+    border: "1px solid rgba(0, 180, 230, 0.2)",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    position: "relative",
   },
   specIcon: {
-    fontSize: "2.4rem",
+    fontSize: "3.2rem",
+    display: "block",
+    transition: "transform 0.3s ease",
   },
   specLabel: {
     fontFamily: "'Inter', sans-serif",
-    fontSize: "0.72rem",
-    letterSpacing: "0.16em",
+    fontSize: "0.7rem",
+    letterSpacing: "0.2em",
     textTransform: "uppercase",
-    color: "#999",
+    color: "#00b4e6",
     margin: 0,
   },
   specValue: {
     fontFamily: "'Cormorant Garamond', serif",
-    fontSize: "1.2rem",
+    fontSize: "1.4rem",
     fontWeight: 700,
-    color: "#000",
+    color: "#fff",
     margin: 0,
     textAlign: "center",
   },
@@ -745,59 +749,26 @@ const S = {
 
   /* Footer */
   footer: {
-    background: "#f8f8f6",
-    padding: "56px 24px 40px",
+    background: "#ffffff",
+    padding: "40px 24px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    borderTop: "1px solid #f0f0ee",
   },
   footerInner: {
     maxWidth: "1040px",
     width: "100%",
     display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    gap: "24px",
-    alignItems: "flex-start",
-  },
-  footerTitle: {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: "1.3rem",
-    letterSpacing: "0.02em",
-    color: "#242424",
-    marginBottom: "8px",
-  },
-  footerSub: {
-    maxWidth: "320px",
-    fontSize: "0.92rem",
-    lineHeight: 1.7,
-    color: "#5b5b5b",
-  },
-  footerLinks: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
-  footerLink: {
-    fontSize: "0.88rem",
-    color: "#4f4f4f",
-    textDecoration: "none",
-  },
-  footerMeta: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "6px",
-    minWidth: "240px",
-  },
-  footerCopy: {
-    fontSize: "0.78rem",
-    color: "#7a7a7a",
-    lineHeight: 1.6,
+    alignItems: "center",
+    justifyContent: "center",
   },
   footerCredit: {
+    fontFamily: "'Inter', sans-serif",
     fontSize: "0.76rem",
-    color: "#2f2f2f",
+    color: "#888",
     letterSpacing: "0.12em",
     textTransform: "uppercase",
+    margin: 0,
   },
 };
