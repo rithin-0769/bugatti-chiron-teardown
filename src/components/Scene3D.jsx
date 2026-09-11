@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 import { parts } from "../data/parts";
 import PartDetailPanel from "./PartDetailPanel";
+import ToolbarOverlay from "./ToolbarOverlay";
 import "./Scene3D.css";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -18,30 +19,32 @@ import "./Scene3D.css";
 //  Each returns a <group> of primitives shaped like the real component
 // ─────────────────────────────────────────────────────────────────────────────
 
-function BodyShellGeometry({ color, emissive, roughness, metalness, hovered, selected }) {
-  const mat = { color, emissive, roughness, metalness, envMapIntensity: 1.2 };
-  const wMat = { color, emissive, roughness: 0, metalness: 1, envMapIntensity: 2 };
+function BodyShellGeometry({ color, emissive, roughness, metalness, hovered, selected, isXRayMode, carColor }) {
+  const baseColor = carColor || color;
+  const mat = isXRayMode ? { color: baseColor, transparent: true, transmission: 1, opacity: 1, roughness: 0.1, thickness: 2, ior: 1.5, envMapIntensity: 1.5 } : { color: baseColor, emissive, roughness, metalness, envMapIntensity: 1.2 };
+  const wMat = isXRayMode ? { ...mat } : { color: baseColor, emissive, roughness: 0, metalness: 1, envMapIntensity: 2 };
+  const Material = isXRayMode ? "meshPhysicalMaterial" : "meshStandardMaterial";
   return (
     <group>
       {/* Main body teardrop — low swept roof */}
       <mesh castShadow>
         <capsuleGeometry args={[0.48, 2.8, 8, 20]} />
-        <meshStandardMaterial {...mat} />
+        <Material {...mat} />
       </mesh>
       {/* Roof cockpit bulge */}
       <mesh position={[0, 0.35, 0]} castShadow>
         <sphereGeometry args={[0.42, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial {...wMat} />
+        <Material {...wMat} />
       </mesh>
       {/* Front pointed nose */}
       <mesh position={[-1.55, -0.1, 0]} rotation={[0, 0, -Math.PI / 2]} castShadow>
         <coneGeometry args={[0.3, 0.7, 10]} />
-        <meshStandardMaterial {...mat} />
+        <Material {...mat} />
       </mesh>
       {/* Rear haunch */}
       <mesh position={[1.3, 0.05, 0]} castShadow>
         <sphereGeometry args={[0.52, 12, 8]} />
-        <meshStandardMaterial {...mat} />
+        <Material {...mat} />
       </mesh>
       {/* Side sill strips */}
       {[-0.5, 0.5].map((z, i) => (
@@ -54,13 +57,13 @@ function BodyShellGeometry({ color, emissive, roughness, metalness, hovered, sel
   );
 }
 
-function MonocoqueGeometry({ color, emissive, roughness, metalness }) {
+function MonocoqueGeometry({ color, emissive, roughness, metalness , carColor }) {
   return (
     <group>
       {/* Main tub */}
       <mesh castShadow>
         <boxGeometry args={[2.6, 0.18, 1.1]} />
-        <meshStandardMaterial color={color} emissive={emissive} roughness={roughness} metalness={metalness} />
+        <meshStandardMaterial color={carColor || color} emissive={emissive} roughness={roughness} metalness={metalness} />
       </mesh>
       {/* Sills */}
       {[-0.58, 0.58].map((z, i) => (
@@ -72,18 +75,18 @@ function MonocoqueGeometry({ color, emissive, roughness, metalness }) {
       {/* A-pillar */}
       <mesh position={[-0.9, 0.22, 0]} rotation={[0, 0, 0.3]} castShadow>
         <cylinderGeometry args={[0.06, 0.06, 0.6, 8]} />
-        <meshStandardMaterial color={color} metalness={metalness} roughness={roughness} />
+        <meshStandardMaterial color={carColor || color} metalness={metalness} roughness={roughness} />
       </mesh>
       {/* B-pillar */}
       <mesh position={[0, 0.22, 0]} castShadow>
         <cylinderGeometry args={[0.06, 0.06, 0.55, 8]} />
-        <meshStandardMaterial color={color} metalness={metalness} roughness={roughness} />
+        <meshStandardMaterial color={carColor || color} metalness={metalness} roughness={roughness} />
       </mesh>
     </group>
   );
 }
 
-function EngineGeometry({ color, emissive, roughness, metalness }) {
+function EngineGeometry({ color, emissive, roughness, metalness , carColor }) {
   // W16 engine block — 16 cylinders in W-formation
   const cylinders = [];
   const bankAngles = [-30, -10, 10, 30];
@@ -97,7 +100,7 @@ function EngineGeometry({ color, emissive, roughness, metalness }) {
       {/* Engine block */}
       <mesh castShadow>
         <boxGeometry args={[1.0, 0.55, 0.9]} />
-        <meshStandardMaterial color={color} emissive={emissive} roughness={roughness} metalness={metalness} />
+        <meshStandardMaterial color={carColor || color} emissive={emissive} roughness={roughness} metalness={metalness} />
       </mesh>
       {/* Cylinder bank rows — 4 banks of 4 cylinders */}
       {bankAngles.map((angle, bank) =>
@@ -126,13 +129,13 @@ function EngineGeometry({ color, emissive, roughness, metalness }) {
   );
 }
 
-function TurboGeometry({ color, emissive }) {
+function TurboGeometry({ color, emissive , carColor }) {
   return (
     <group>
       {/* Compressor housing — large snail shell */}
       <mesh castShadow>
         <torusGeometry args={[0.2, 0.1, 10, 20]} />
-        <meshStandardMaterial color={color} emissive={emissive} metalness={0.9} roughness={0.2} />
+        <meshStandardMaterial color={carColor || color} emissive={emissive} metalness={0.9} roughness={0.2} />
       </mesh>
       {/* Compressor inlet pipe */}
       <mesh position={[0.22, 0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
@@ -153,18 +156,18 @@ function TurboGeometry({ color, emissive }) {
   );
 }
 
-function ActiveWingGeometry({ color, emissive }) {
+function ActiveWingGeometry({ color, emissive , carColor }) {
   return (
     <group>
       {/* Main wing plane — thin swept aerofoil profile */}
       <mesh castShadow>
         <boxGeometry args={[0.55, 0.06, 1.4]} />
-        <meshStandardMaterial color={color} emissive={emissive} metalness={0.95} roughness={0.05} />
+        <meshStandardMaterial color={carColor || color} emissive={emissive} metalness={0.95} roughness={0.05} />
       </mesh>
       {/* Gurney flap trailing edge */}
       <mesh position={[0.25, 0.06, 0]} castShadow>
         <boxGeometry args={[0.04, 0.12, 1.4]} />
-        <meshStandardMaterial color={color} emissive={emissive} metalness={0.9} roughness={0.1} />
+        <meshStandardMaterial color={carColor || color} emissive={emissive} metalness={0.9} roughness={0.1} />
       </mesh>
       {/* Left swan-neck strut */}
       <mesh position={[0, -0.22, -0.52]} rotation={[0.3, 0, 0]} castShadow>
@@ -180,20 +183,20 @@ function ActiveWingGeometry({ color, emissive }) {
       {[-0.72, 0.72].map((z, i) => (
         <mesh key={i} position={[0, 0.02, z]} castShadow>
           <boxGeometry args={[0.55, 0.2, 0.04]} />
-          <meshStandardMaterial color={color} emissive={emissive} metalness={0.95} roughness={0.05} />
+          <meshStandardMaterial color={carColor || color} emissive={emissive} metalness={0.95} roughness={0.05} />
         </mesh>
       ))}
     </group>
   );
 }
 
-function SplitterGeometry({ color, emissive }) {
+function SplitterGeometry({ color, emissive , carColor }) {
   return (
     <group>
       {/* Main flat splitter plate */}
       <mesh castShadow>
         <boxGeometry args={[0.06, 0.04, 1.5]} />
-        <meshStandardMaterial color={color} emissive={emissive} metalness={0.5} roughness={0.2} />
+        <meshStandardMaterial color={carColor || color} emissive={emissive} metalness={0.5} roughness={0.2} />
       </mesh>
       {/* Vertical strakes */}
       {[-0.5, 0, 0.5].map((z, i) => (
@@ -205,19 +208,19 @@ function SplitterGeometry({ color, emissive }) {
       {/* Front lip */}
       <mesh position={[0.05, 0.01, 0]} castShadow>
         <boxGeometry args={[0.04, 0.03, 1.5]} />
-        <meshStandardMaterial color={color} metalness={0.6} roughness={0.15} />
+        <meshStandardMaterial color={carColor || color} metalness={0.6} roughness={0.15} />
       </mesh>
     </group>
   );
 }
 
-function GearboxGeometry({ color, emissive, roughness, metalness }) {
+function GearboxGeometry({ color, emissive, roughness, metalness , carColor }) {
   return (
     <group>
       {/* Main casing */}
       <mesh castShadow>
         <boxGeometry args={[0.72, 0.45, 0.8]} />
-        <meshStandardMaterial color={color} emissive={emissive} roughness={roughness} metalness={metalness} />
+        <meshStandardMaterial color={carColor || color} emissive={emissive} roughness={roughness} metalness={metalness} />
       </mesh>
       {/* Output shaft */}
       <mesh position={[0.42, 0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
@@ -240,7 +243,7 @@ function GearboxGeometry({ color, emissive, roughness, metalness }) {
   );
 }
 
-function WheelGeometry({ color, emissive }) {
+function WheelGeometry({ color, emissive, carColor }) {
   return (
     <group>
       {/* Tyre */}
@@ -251,7 +254,7 @@ function WheelGeometry({ color, emissive }) {
       {/* Rim */}
       <mesh castShadow rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[0.32, 0.32, 0.06, 20]} />
-        <meshStandardMaterial color={color} emissive={emissive} metalness={0.95} roughness={0.05} />
+        <meshStandardMaterial color={carColor || color} emissive={emissive} metalness={0.95} roughness={0.05} />
       </mesh>
       {/* 6 spokes */}
       {[0, 1, 2, 3, 4, 5].map((i) => {
@@ -263,7 +266,7 @@ function WheelGeometry({ color, emissive }) {
             castShadow
           >
             <boxGeometry args={[0.05, 0.04, 0.32]} />
-            <meshStandardMaterial color={color} metalness={0.95} roughness={0.05} />
+            <meshStandardMaterial color={carColor || color} metalness={0.95} roughness={0.05} />
           </mesh>
         );
       })}
@@ -276,7 +279,7 @@ function WheelGeometry({ color, emissive }) {
   );
 }
 
-function BrakeGeometry({ color, emissive }) {
+function BrakeGeometry({ color, emissive , carColor }) {
   return (
     <group>
       {/* Carbon-ceramic disc */}
@@ -297,7 +300,7 @@ function BrakeGeometry({ color, emissive }) {
       {/* Caliper body */}
       <mesh position={[0, 0.06, 0.3]} castShadow>
         <boxGeometry args={[0.28, 0.18, 0.14]} />
-        <meshStandardMaterial color={color} emissive={emissive} metalness={0.8} roughness={0.3} />
+        <meshStandardMaterial color={carColor || color} emissive={emissive} metalness={0.8} roughness={0.3} />
       </mesh>
       {/* Caliper pistons */}
       {[-0.08, 0.08].map((x, i) => (
@@ -310,7 +313,7 @@ function BrakeGeometry({ color, emissive }) {
   );
 }
 
-function ExhaustGeometry({ color, emissive }) {
+function ExhaustGeometry({ color, emissive , carColor }) {
   // 5-pipe exhausts like the real Chiron
   const pipes = [
     [-0.28, 0.14], [-0.12, 0.14], [0, 0], [0.12, 0.14], [0.28, 0.14],
@@ -346,13 +349,13 @@ function ExhaustGeometry({ color, emissive }) {
   );
 }
 
-function NacaDuctGeometry({ color, emissive }) {
+function NacaDuctGeometry({ color, emissive , carColor }) {
   return (
     <group>
       {/* NACA duct scoop body */}
       <mesh castShadow>
         <boxGeometry args={[0.75, 0.08, 0.18]} />
-        <meshStandardMaterial color={color} emissive={emissive} metalness={0.6} roughness={0.15} />
+        <meshStandardMaterial color={carColor || color} emissive={emissive} metalness={0.6} roughness={0.15} />
       </mesh>
       {/* Internal channel (slightly inset) */}
       <mesh position={[0, -0.04, 0]} castShadow>
@@ -362,19 +365,19 @@ function NacaDuctGeometry({ color, emissive }) {
       {/* Lip at inlet */}
       <mesh position={[-0.38, 0.02, 0]} castShadow>
         <boxGeometry args={[0.04, 0.06, 0.18]} />
-        <meshStandardMaterial color={color} emissive={emissive} metalness={0.7} roughness={0.1} />
+        <meshStandardMaterial color={carColor || color} emissive={emissive} metalness={0.7} roughness={0.1} />
       </mesh>
     </group>
   );
 }
 
-function FuelSystemGeometry({ color, emissive }) {
+function FuelSystemGeometry({ color, emissive , carColor }) {
   return (
     <group>
       {/* Main fuel tank */}
       <mesh castShadow>
         <capsuleGeometry args={[0.22, 0.9, 6, 12]} />
-        <meshStandardMaterial color={color} emissive={emissive} metalness={0.85} roughness={0.2} />
+        <meshStandardMaterial color={carColor || color} emissive={emissive} metalness={0.85} roughness={0.2} />
       </mesh>
       {/* Fuel rail high-pressure */}
       <mesh position={[0.28, 0, 0]} castShadow>
@@ -389,15 +392,15 @@ function FuelSystemGeometry({ color, emissive }) {
       {/* Fuel pump */}
       <mesh position={[0, -0.5, 0]} castShadow>
         <cylinderGeometry args={[0.1, 0.08, 0.2, 10]} />
-        <meshStandardMaterial color={color} metalness={0.9} roughness={0.2} />
+        <meshStandardMaterial color={carColor || color} metalness={0.9} roughness={0.2} />
       </mesh>
     </group>
   );
 }
 
 // Map part id → specific geometry component
-function PartGeometrySwitch({ part, hovered, selected }) {
-  const p = { ...part, hovered, selected };
+function PartGeometrySwitch({ part, hovered, selected, isXRayMode, carColor }) {
+  const p = { ...part, hovered, selected, isXRayMode, carColor };
   switch (part.id) {
     case "body-shell":   return <BodyShellGeometry   {...p} />;
     case "monocoque":    return <MonocoqueGeometry    {...p} />;
@@ -424,7 +427,7 @@ function PartGeometrySwitch({ part, hovered, selected }) {
 // ─────────────────────────────────────────────────────────────────────────────
 //  Animated part group (handles explosion lerp + selection glow)
 // ─────────────────────────────────────────────────────────────────────────────
-function CarPart({ part, explodeProgress, onSelect, isSelected }) {
+function CarPart({ part, explodeProgress, onSelect, isSelected, isXRayMode, carColor }) {
   const groupRef = useRef();
   const [hovered, setHovered] = useState(false);
   const currentPos = useRef(new THREE.Vector3(...part.position));
@@ -466,7 +469,7 @@ function CarPart({ part, explodeProgress, onSelect, isSelected }) {
         </mesh>
       )}
 
-      <PartGeometrySwitch part={part} hovered={hovered} selected={isSelected} />
+      <PartGeometrySwitch part={part} hovered={hovered} selected={isSelected} isXRayMode={isXRayMode} carColor={carColor} />
 
       {/* Floating 3D label when exploded */}
       {explodeProgress > 0.35 && (
@@ -511,7 +514,7 @@ function CameraRig({ explodeProgress }) {
 // ─────────────────────────────────────────────────────────────────────────────
 //  Full scene contents (inside Canvas)
 // ─────────────────────────────────────────────────────────────────────────────
-function CarScene({ explodeProgress, selectedPart, onPartSelect }) {
+function CarScene({ explodeProgress, selectedPart, onPartSelect, isXRayMode, carColor }) {
   return (
     <>
       {/* Lighting */}
@@ -559,6 +562,8 @@ function CarScene({ explodeProgress, selectedPart, onPartSelect }) {
           explodeProgress={explodeProgress}
           onSelect={onPartSelect}
           isSelected={selectedPart?.id === part.id}
+          isXRayMode={isXRayMode}
+          carColor={carColor}
         />
       ))}
     </>
@@ -571,6 +576,9 @@ function CarScene({ explodeProgress, selectedPart, onPartSelect }) {
 export default function Scene3DSection() {
   const [explodeProgress, setExplodeProgress] = useState(0);
   const [selectedPart, setSelectedPart] = useState(null);
+  const [carColor, setCarColor] = useState("#0055ff");
+  const [isXRayMode, setIsXRayMode] = useState(false);
+  const [isTourMode, setIsTourMode] = useState(false);
   const sectionRef = useRef(null);
   const progressRef = useRef(0);
 
@@ -589,14 +597,19 @@ export default function Scene3DSection() {
   useEffect(() => {
     let smoothed = 0;
     let raf;
-    const loop = () => {
-      smoothed += (progressRef.current - smoothed) * 0.04;
-      setExplodeProgress(Math.max(0, Math.min(1, smoothed)));
+    const loop = (t) => {
+      if (isTourMode) {
+         const cycle = (Math.sin(t * 0.0005 - Math.PI/2) + 1) / 2;
+         setExplodeProgress(cycle);
+      } else {
+         smoothed += (progressRef.current - smoothed) * 0.04;
+         setExplodeProgress(Math.max(0, Math.min(1, smoothed)));
+      }
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [isTourMode]);
 
   const stateLabel =
     explodeProgress < 0.12 ? "Scroll to disassemble"
@@ -606,6 +619,11 @@ export default function Scene3DSection() {
   return (
     <section id="teardown" className="scene3d-section" ref={sectionRef}>
       <div className="scene3d-sticky">
+        <ToolbarOverlay 
+          carColor={carColor} setCarColor={setCarColor} 
+          isXRayMode={isXRayMode} setIsXRayMode={setIsXRayMode} 
+          isTourMode={isTourMode} setIsTourMode={setIsTourMode} 
+        />
         {/* Header */}
         <div className="scene3d-header">
           <motion.span
@@ -647,6 +665,8 @@ export default function Scene3DSection() {
             explodeProgress={explodeProgress}
             selectedPart={selectedPart}
             onPartSelect={(p) => setSelectedPart((prev) => (prev?.id === p.id ? null : p))}
+            isXRayMode={isXRayMode}
+            carColor={carColor}
           />
         </Canvas>
 

@@ -2,10 +2,6 @@ import React, { useEffect } from "react";
 import Lenis from "lenis";
 import {
   HeroSection,
-  FeaturesSection,
-  SpecsSection,
-  TechSection,
-  CTASection,
   FooterSection,
   GlobalResponsive,
 } from "./sections";
@@ -32,10 +28,6 @@ export default function App() {
     <>
       <GlobalResponsive />
       <HeroSection />
-      <FeaturesSection />
-      <SpecsSection />
-      <TechSection />
-      <CTASection />
       <FooterSection />
     </>
   );
